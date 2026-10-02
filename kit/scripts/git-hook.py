@@ -10,15 +10,16 @@ import sys
 
 KIT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(KIT))
-from lib.state_freshness import check
+from lib.state_freshness import check_revision
 
 def run(args, repo, timeout=30):
     return subprocess.run(args, cwd=repo, timeout=timeout, check=False)
 
-def main(argv=None):
+def main(argv=None, push_input=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('event', choices=['pre-commit', 'pre-push'])
     parser.add_argument('--repo', type=Path, default=Path.cwd())
+    parser.add_argument('--git-stdin', action='store_true', help='read actual pushed refs from Git stdin')
     args = parser.parse_args(argv)
     repo = args.repo.resolve()
     if not shutil.which('gitleaks'):
@@ -57,16 +58,30 @@ def main(argv=None):
                 print('BLOCK: staged project.state is invalid.', file=sys.stderr)
                 return 1
         return 0
-    verdict = check(repo)
-    if verdict['status'] == 'feature_branch':
-        if verdict['state_touched']:
-            print('BLOCK: feature branch changes project.state; keep branch handoff in the PR.', file=sys.stderr)
+    if args.git_stdin:
+        records = sys.stdin.read(1024 * 1024 + 1) if push_input is None else push_input
+        if len(records) > 1024 * 1024:
+            raise ValueError('push input exceeds limit')
+        targets = []
+        for line in records.splitlines():
+            fields = line.split()
+            if len(fields) != 4:
+                raise ValueError('invalid pre-push input')
+            _, revision, destination, _ = fields
+            if revision and set(revision) == {'0'}:
+                continue  # Ref deletion does not send a commit.
+            targets.append((revision, destination))
+    else:
+        branch = subprocess.run(['git', '-C', str(repo), 'symbolic-ref', '-q', 'HEAD'],
+                                text=True, capture_output=True, timeout=10)
+        targets = [('HEAD', branch.stdout.strip() or None)]
+    for revision, destination in targets:
+        verdict = check_revision(repo, revision, destination)
+        if verdict['status'] == 'feature_branch' and not verdict['state_touched']:
+            continue
+        if verdict['status'] != 'fresh':
+            print(f"BLOCK: pushed project.state freshness = {verdict['status']}. Commit code, stamp state, commit state.", file=sys.stderr)
             return 1
-        print('Feature branch: default-branch state anchor is not required here.')
-        return 0
-    if verdict['status'] != 'fresh':
-        print(f"BLOCK: project.state freshness = {verdict['status']}. Commit code, stamp state, commit state.", file=sys.stderr)
-        return 1
     return 0
 
 if __name__ == '__main__':

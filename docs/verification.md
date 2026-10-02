@@ -2,7 +2,7 @@
 
 ## Локальная проверка
 
-Полный набор: `python -m pytest -q kit/tests` — 149 passed на Python 3.12/macOS.
+Полный набор: `python -m pytest -q kit/tests` — 157 passed на Python 3.12/macOS.
 Проверка опубликованных файлов: `python3 kit/scripts/public-check.py` — 0 findings.
 Gitleaks 8.30.1: staged baseline — no leaks found; full-history scan выполняется после коммитов.
 
@@ -10,6 +10,11 @@ Gitleaks 8.30.1: staged baseline — no leaks found; full-history scan выпо�
 против отличающегося worktree, пути с пробелами, повторная установка, сохранение
 существующих hooks/settings, отказ при изменённой установке, безопасное удаление,
 SessionStart/Stop JSON и защита от stop-loop.
+
+Независимое ревью исходной версии выявило и помогло исправить parent-symlink,
+проверку неправильного pushed revision, удаление pre-existing Claude entry,
+перезапись существующей schema и неподтверждённое обещание branch guard.
+Регрессии покрывают эти случаи, в том числе настоящим push в локальный bare remote.
 
 ## Независимая проверка и CI
 

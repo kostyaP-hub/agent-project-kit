@@ -121,10 +121,11 @@ def main():
         os.makedirs(cfgdir, exist_ok=True)
         open(ex_json, "w", encoding="utf-8").write(
             '{\n  "version": 1,\n  "thresholds": {}\n}\n')
-        open(ex_schema, "w", encoding="utf-8").write(
-            '{\n  "type": "object",\n  "required": ["version"],\n'
-            '  "properties": {\n    "version": {"type": "integer"},\n'
-            '    "thresholds": {"type": "object"}\n  }\n}\n')
+        if not os.path.exists(ex_schema):
+            open(ex_schema, "w", encoding="utf-8").write(
+                '{\n  "type": "object",\n  "required": ["version"],\n'
+                '  "properties": {\n    "version": {"type": "integer"},\n'
+                '    "thresholds": {"type": "object"}\n  }\n}\n')
         print(f"WROTE {cfgdir}/ (example config + schema — вынеси пороги/контракты сюда)")
 
     # .gitignore + .worktrees/

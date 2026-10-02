@@ -188,3 +188,96 @@ def test_reference_wrappers_match_installer():
     module = load('install-hooks')
     for event in ('pre-commit', 'pre-push'):
         assert (KIT.parent / 'hooks/git' / event).read_text() == module.wrapper(event)
+
+def test_symlink_hooks_parent_refused_on_install_and_uninstall(tmp_path):
+    root = repo(tmp_path)
+    outside = tmp_path / 'outside-hooks'
+    outside.mkdir()
+    parent = root / '.git/hooks'
+    parent.symlink_to(outside, target_is_directory=True)
+    assert install(root).returncode == 1
+    assert list(outside.iterdir()) == []
+    assert not (root / '.git/agent-project-kit').exists()
+    parent.unlink()
+    assert install(root).returncode == 0
+    # Redirect the parent after a valid install: uninstall must also refuse.
+    saved = root / '.git/original-hooks'
+    parent.rename(saved)
+    parent.symlink_to(outside, target_is_directory=True)
+    assert install(root, '--uninstall').returncode == 1
+    assert list(outside.iterdir()) == []
+    assert (saved / 'pre-commit').exists()
+    assert (root / '.git/agent-project-kit').exists()
+
+def test_preexisting_identical_claude_entry_survives_uninstall(tmp_path):
+    root = repo(tmp_path)
+    module = load('install-hooks')
+    path = root / '.claude/settings.local.json'
+    path.parent.mkdir()
+    original = {'permissions': {'allow': []}, 'hooks': {'Stop': [module.claude_entry('stop')]}}
+    path.write_text(json.dumps(original))
+    assert install(root, '--claude').returncode == 0
+    assert install(root, '--uninstall').returncode == 0
+    assert json.loads(path.read_text()) == original
+
+def test_failed_install_rolls_back_generated_runtime(tmp_path):
+    root = repo(tmp_path)
+    # A non-directory hook parent makes wrapper creation fail after staging.
+    parent = root / '.git/hooks'
+    parent.write_text('must survive')
+    assert install(root).returncode == 1
+    assert parent.read_text() == 'must survive'
+    assert not (root / '.git/agent-project-kit').exists()
+
+def remote(root, tmp_path):
+    origin = tmp_path / 'origin.git'
+    origin.mkdir()
+    git(origin, 'init', '--bare', '-b', 'main')
+    git(root, 'remote', 'add', 'origin', str(origin))
+    git(root, 'push', '-u', 'origin', 'main')
+    git(root, 'remote', 'set-head', 'origin', '-a')
+    return origin
+
+def test_real_push_checks_committed_state_not_uncommitted_stamp(tmp_path):
+    root = repo(tmp_path)
+    origin = remote(root, tmp_path)
+    assert install(root).returncode == 0
+    old_remote = git(origin, 'rev-parse', 'main').stdout
+    (root / 'code.txt').write_text('change\n')
+    git(root, 'commit', '-am', 'change')
+    assert git(root, 'push', 'origin', 'main', check=False).returncode != 0
+    stamp = subprocess.run([sys.executable, '-B', str(SCRIPTS / 'project-state-stamp.py'), '--repo', str(root)],
+                           text=True, capture_output=True)
+    assert stamp.returncode == 0
+    assert git(root, 'push', 'origin', 'main', check=False).returncode != 0
+    assert git(origin, 'rev-parse', 'main').stdout == old_remote
+    git(root, 'add', '--', 'project.state')
+    git(root, 'commit', '-m', 'state')
+    assert git(root, 'push', 'origin', 'main', check=False).returncode == 0
+    assert git(origin, 'rev-parse', 'main').stdout == git(root, 'rev-parse', 'HEAD').stdout
+
+def test_real_push_checks_other_source_ref_and_destination(tmp_path):
+    root = repo(tmp_path)
+    origin = remote(root, tmp_path)
+    git(root, 'checkout', '-b', 'feature')
+    (root / 'code.txt').write_text('feature code\n')
+    path = root / 'project.state'
+    path.write_text(path.read_text().replace('Run the checks.', 'Changed on feature.'))
+    git(root, 'commit', '-am', 'feature code and wrong state')
+    git(root, 'checkout', 'main')
+    assert install(root).returncode == 0
+    assert git(root, 'push', 'origin', 'feature', check=False).returncode != 0
+    assert git(origin, 'rev-parse', '--verify', 'feature', check=False).returncode != 0
+    old_remote = git(origin, 'rev-parse', 'main').stdout
+    assert git(root, 'push', 'origin', 'feature:main', check=False).returncode != 0
+    assert git(origin, 'rev-parse', 'main').stdout == old_remote
+
+def test_manifest_cannot_escape_runtime_on_uninstall(tmp_path):
+    root = repo(tmp_path)
+    assert install(root).returncode == 0
+    manifest = root / '.git/agent-project-kit/install.json'
+    data = json.loads(manifest.read_text())
+    data['files']['../outside.txt'] = 'a' * 64
+    manifest.write_text(json.dumps(data))
+    assert install(root, '--uninstall').returncode == 1
+    assert (root / '.git/hooks/pre-commit').exists()

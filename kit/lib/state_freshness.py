@@ -109,3 +109,70 @@ def check(repo, timeout=10) -> dict:
                        f"После head_sha {anchor[:7]} коммитов с кодом: {len(code)}, последний {code[0][:7]}.")
     return _result("fresh", root, state_path, anchor, 0, None,
                    "После head_sha нет коммитов с изменениями кода.")
+
+def check_revision(repo, revision="HEAD", destination_ref=None, timeout=10) -> dict:
+    """Check committed bytes at a pushed revision, never the working-tree state.
+
+    Destination matters: feature:main must pass the mainline gate as well.
+    This check is read-only and does not create a checkout or stamp anything.
+    """
+    root = Path(repo).resolve()
+    commit = _git(root, ["rev-parse", "--verify", f"{revision}^{{commit}}"], timeout)
+    if commit is None or commit.returncode:
+        return _result("anchor_unreachable", root, detail="Pushed commit cannot be read.")
+    revision = commit.stdout.strip()
+    data = None
+    state_path = None
+    for name in STATE_NAMES:
+        contents = _git(root, ["show", f"{revision}:{name}"], timeout)
+        if contents is not None and not contents.returncode:
+            state_path = root / name
+            try:
+                validator = _load_validator()
+                data = validator.yaml_subset(contents.stdout)
+                if validator.validate(data):
+                    return _result("invalid_state", root, state_path)
+            except (OSError, ValueError, ImportError):
+                return _result("invalid_state", root, state_path)
+            break
+    if data is None:
+        return _result("no_state", root)
+    origin = _git(root, ["remote", "get-url", "origin"], timeout)
+    remote_head = _git(root, ["symbolic-ref", "-q", "--short", "refs/remotes/origin/HEAD"], timeout)
+    default_ref = remote_head.stdout.strip() if remote_head is not None and not remote_head.returncode else ""
+    default_branch = default_ref.removeprefix("origin/") if default_ref else ""
+    if not default_branch:
+        # With a remote but no known HEAD, only conventional main/master are
+        # recognized. Custom defaults must explicitly set origin/HEAD.
+        label = (destination_ref or "").removeprefix("refs/heads/")
+        default_branch = label if label in {"main", "master"} else "main"
+        default_ref = "origin/" + default_branch
+    has_origin = origin is not None and not origin.returncode
+    is_feature = (has_origin and destination_ref is not None and
+                  destination_ref.startswith("refs/heads/") and
+                  destination_ref != "refs/heads/" + default_branch)
+    if is_feature:
+        base = _git(root, ["merge-base", revision, default_ref], timeout)
+        if base is None or base.returncode or not base.stdout.strip():
+            return _result("unknown_branch", root, state_path, detail="Cannot verify feature-branch state against the default branch.")
+        diff = _git(root, ["diff", "--quiet", base.stdout.strip(), revision, "--", *STATE_NAMES], timeout)
+        if diff is None or diff.returncode not in (0, 1):
+            return _result("unknown_branch", root, state_path)
+        return _result("feature_branch", root, state_path, state_touched=diff.returncode == 1)
+    anchor = data.get("head_sha")
+    if not anchor:
+        return _result("no_anchor", root, state_path)
+    ancestor = _git(root, ["merge-base", "--is-ancestor", anchor, revision], timeout)
+    if ancestor is None or ancestor.returncode:
+        return _result("anchor_unreachable", root, state_path, anchor)
+    log = _git(root, ["log", "--no-renames", "--name-only", "--format=%x00%H", f"{anchor}..{revision}"], timeout)
+    if log is None or log.returncode:
+        return _result("anchor_unreachable", root, state_path, anchor)
+    code = []
+    for block in log.stdout.split("\0")[1:]:
+        lines = [line for line in block.splitlines() if line]
+        if lines and any(path not in STATE_NAMES for path in lines[1:]):
+            code.append(lines[0])
+    if code:
+        return _result("stale", root, state_path, anchor, len(code), code[0][:12])
+    return _result("fresh", root, state_path, anchor, 0)
