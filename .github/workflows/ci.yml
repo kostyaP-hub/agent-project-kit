@@ -20,7 +20,8 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - name: Install pinned test dependencies
-        run: python -m pip install --only-binary=:all: -r requirements-dev.txt
+        run: |
+          python -m pip install --only-binary=:all: -r requirements-dev.txt
       - name: Install verified Gitleaks binary
         shell: bash
         run: |

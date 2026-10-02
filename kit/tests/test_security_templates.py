@@ -36,3 +36,17 @@ def test_dependabot_template_has_valid_update_structure() -> None:
     for item in config["updates"]:
         assert item["directory"] == "/"
         assert item["schedule"]["interval"] == "weekly"
+
+
+def test_actual_repository_ci_parses_and_shell_steps_are_valid() -> None:
+    """Test the shipped workflow too: a YAML colon in an inline run broke CI."""
+    import re
+    ci = load_yaml(ROOT.parent / '.github/workflows/ci.yml')
+    assert ci['permissions'] == {'contents': 'read'}
+    matrix = ci['jobs']['test']['strategy']['matrix']
+    assert set(matrix['os']) == {'ubuntu-latest', 'macos-latest'}
+    assert set(matrix['python']) == {'3.11', '3.12'}
+    for step in ci['jobs']['test']['steps']:
+        if 'run' in step:
+            command = re.sub(r'\$\{\{.*?\}\}', 'value', step['run'])
+            subprocess.run(['bash', '-n', '-c', command], check=True, capture_output=True)

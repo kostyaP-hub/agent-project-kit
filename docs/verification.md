@@ -2,7 +2,7 @@
 
 ## Локальная проверка
 
-Полный набор: `python -m pytest -q kit/tests` — 157 passed на Python 3.12/macOS.
+Полный набор: `python -m pytest -q kit/tests` — 158 passed на Python 3.12/macOS.
 Проверка опубликованных файлов: `python3 kit/scripts/public-check.py` — 0 findings.
 Gitleaks 8.30.1: staged baseline — no leaks found; full-history scan выполняется после коммитов.
 
