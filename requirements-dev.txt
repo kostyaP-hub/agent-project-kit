@@ -1,0 +1,8 @@
+# Test dependencies; CLI runtime uses stdlib, pathspec is optional for .ctxignore.
+iniconfig==2.3.0
+packaging==26.3
+pathspec==1.1.1
+pluggy==1.6.0
+Pygments==2.21.0
+pytest==9.1.1
+PyYAML==6.0.3

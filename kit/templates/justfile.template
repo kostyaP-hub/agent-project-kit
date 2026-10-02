@@ -1,0 +1,29 @@
+# Project-local commands. Replace every {{...}} placeholder during adoption.
+# check = полный локальный DoD
+# python: venv репо, если он есть; иначе системный. `just setup` создаёт .venv.
+python := if path_exists(".venv/bin/python") == "true" { ".venv/bin/python" } else { "python3" }
+
+setup:
+    test -x .venv/bin/python || { command -v python3.12 >/dev/null && python3.12 -m venv .venv || python3 -m venv .venv; }
+    {{setup_command}}   # напр.: .venv/bin/python -m pip install -e ".[dev]"
+
+format:
+    {{format_command}}
+
+lint:
+    {{lint_command}}
+
+types:
+    {{types_command}}
+
+test:
+    {{test_command}}
+
+e2e:
+    {{e2e_command}}
+
+run:
+    {{run_command}}
+
+check:
+    {{check_command}}

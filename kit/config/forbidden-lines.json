@@ -1,0 +1,16 @@
+[
+  {
+    "id": "git-add-all",
+    "pattern": "(?im)^(?!.*(?:никогда|never|запрещ|нельзя|не\\s+(?:делай|использ)|forbid|don't|do not)).*\\bgit\\s+add\\s+(?:-A\\b|\\.(?=\\s|$)).*$",
+    "severity": "error",
+    "message": "никогда `git add -A` — добавляй свои файлы поимённо",
+    "exception_marker": "(?im)^\\s*(?:Exception|Исключение)\\s*:\\s*\\S"
+  },
+  {
+    "id": "push-without-gate",
+    "pattern": "(?im)(?:\\bgit\\s+push\\b|→\\s*push\\b)",
+    "severity": "error",
+    "message": "push / PR / merge / tag — только после явного разрешения человека",
+    "exception_marker": "(?im)^\\s*(?:Exception|Исключение)\\s*:\\s*\\S"
+  }
+]

@@ -1,0 +1,5 @@
+#!/bin/sh
+# agent-project-kit managed hook
+set -eu
+kit_dir="$(git rev-parse --path-format=absolute --git-common-dir)/agent-project-kit"
+exec python3 -B "$kit_dir/scripts/git-hook.py" pre-push

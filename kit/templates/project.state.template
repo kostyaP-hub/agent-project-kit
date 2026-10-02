@@ -1,0 +1,15 @@
+# project.state: указатель, а не план и не журнал. Держать до 40 строк.
+schema_version: 1
+project: example-project
+status: building            # idea | building | live | maintained | paused | superseded | archived | external
+stage: "Короткое текущее состояние, до 80 символов"
+updated: 2026-09-09
+pointers:
+  knowledge_entity: wiki/projects/example-project.md
+  architecture: ARCHITECTURE.md
+  task_state: docs/CURRENT_TASK.md
+last_audit:
+  sha: abcdef1
+  date: 2026-09-09
+  evidence: docs/audits/latest.md
+next_action: "Один конкретный следующий шаг."

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="240" viewBox="0 0 960 240" role="img" aria-label="Agent Project Kit: Context, Rules, Hooks, Evidence">
+<rect width="960" height="240" rx="22" fill="#0e1726"/>
+<path d="M52 45h8v150h-8z" fill="#73e2c4"/>
+<text x="88" y="100" font-family="system-ui,sans-serif" font-size="48" font-weight="700" fill="#f7fafc">Agent Project Kit</text>
+<text x="90" y="143" font-family="system-ui,sans-serif" font-size="21" fill="#b4c5da">Context. Rules. Hooks. Evidence.</text>
+<g font-family="system-ui,sans-serif" font-size="14" fill="#d8e3f0">
+<rect x="90" y="172" width="113" height="30" rx="15" fill="#22344d"/><text x="108" y="192">Local first</text>
+<rect x="215" y="172" width="126" height="30" rx="15" fill="#22344d"/><text x="233" y="192">Opt-in hooks</text>
+<rect x="353" y="172" width="105" height="30" rx="15" fill="#22344d"/><text x="375" y="192">MIT license</text>
+</g><path d="M810 74l-28 35 28 35M864 74l28 35-28 35" stroke="#73e2c4" stroke-width="6" fill="none" stroke-linecap="round"/></svg>

@@ -1,0 +1,22 @@
+# Local delivery archives, training progress and runtime files never belong in the public repo.
+dist/
+learn/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+.worktrees/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+*.db
+*.sqlite*
+.DS_Store
+.claude/settings.local.json

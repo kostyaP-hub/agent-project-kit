@@ -1,0 +1,10 @@
+# Synthetic example; no runtime or audit result is asserted.
+schema_version: 1
+project: demo-calculator
+status: building
+stage: Example project under development
+updated: 2026-01-01
+pointers:
+  knowledge_entity: docs/project.md
+  architecture: ARCHITECTURE.md
+next_action: Run the documented checks before claiming completion.

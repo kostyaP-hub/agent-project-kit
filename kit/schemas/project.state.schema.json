@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "project.state v1.4 (portable)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project",
+    "status",
+    "updated",
+    "pointers",
+    "next_action"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "project": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "status": {
+      "enum": [
+        "idea",
+        "building",
+        "live",
+        "maintained",
+        "paused",
+        "superseded",
+        "archived",
+        "external"
+      ]
+    },
+    "stage": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "active_system": {
+      "type": "string"
+    },
+    "updated": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "pointers": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      },
+      "anyOf": [
+        {
+          "required": [
+            "knowledge_entity"
+          ]
+        },
+        {
+          "required": [
+            "vault_entity"
+          ]
+        }
+      ],
+      "properties": {
+        "knowledge_entity": {
+          "type": "string"
+        },
+        "vault_entity": {
+          "type": "string"
+        },
+        "module_map": {
+          "type": "string"
+        },
+        "architecture": {
+          "type": "string"
+        },
+        "task_state": {
+          "type": "string"
+        },
+        "roadmap": {
+          "type": "string"
+        },
+        "release_contract": {
+          "type": "string"
+        },
+        "decisions": {
+          "type": "string"
+        }
+      },
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_]*$"
+      }
+    },
+    "last_audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sha",
+        "date",
+        "evidence"
+      ],
+      "properties": {
+        "sha": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{7,40}$"
+        },
+        "date": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "evidence": {
+          "type": "string"
+        }
+      }
+    },
+    "exceptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "reason",
+          "owner",
+          "removal_condition"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "removal_condition": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "next_action": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "what",
+          "owner"
+        ],
+        "properties": {
+          "what": {
+            "type": "string"
+          },
+          "owner": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "superseded_by": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "head_sha": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{7,40}$"
+    }
+  }
+}

@@ -1,0 +1,4 @@
+title = "Agent Project Kit secret scanning"
+# Keep default detectors enabled. No broad test-fixture exclusions.
+[extend]
+useDefault = true

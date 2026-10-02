@@ -1,0 +1,51 @@
+name: CI
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python: ['3.11', '3.12']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install pinned test dependencies
+        run: python -m pip install --only-binary=:all: -r requirements-dev.txt
+      - name: Install verified Gitleaks binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "${{ runner.os }}-${{ runner.arch }}" in
+            Linux-X64) asset=gitleaks_8.30.1_linux_x64.tar.gz; checksum=551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb ;;
+            Linux-ARM64) asset=gitleaks_8.30.1_linux_arm64.tar.gz; checksum=e4a487ee7ccd7d3a7f7ec08657610aa3606637dab924210b3aee62570fb4b080 ;;
+            macOS-X64) asset=gitleaks_8.30.1_darwin_x64.tar.gz; checksum=dfe101a4db2255fc85120ac7f3d25e4342c3c20cf749f2c20a18081af1952709 ;;
+            macOS-ARM64) asset=gitleaks_8.30.1_darwin_arm64.tar.gz; checksum=b40ab0ae55c505963e365f271a8d3846efbc170aa17f2607f13df610a9aeb6a5 ;;
+            *) exit 1 ;;
+          esac
+          tmp="$RUNNER_TEMP/gitleaks"
+          mkdir -p "$tmp"
+          cd "$tmp"
+          base=https://github.com/gitleaks/gitleaks/releases/download/v8.30.1
+          curl --fail --silent --show-error --location "$base/$asset" -o "$asset"
+          echo "$checksum  $asset" > checksum.txt
+          if command -v sha256sum >/dev/null; then sha256sum -c checksum.txt; else shasum -a 256 -c checksum.txt; fi
+          tar -xzf "$asset" gitleaks
+          echo "$tmp" >> "$GITHUB_PATH"
+      - name: Full test suite
+        run: python -m pytest -q kit/tests
+      - name: Publication privacy checks
+        run: python kit/scripts/public-check.py
+      - name: State schema
+        run: python kit/scripts/project-state-validate.py --repo .
+      - name: Full-history secret scan
+        run: gitleaks git . --log-opts=--all --redact --no-banner --ignore-gitleaks-allow --config kit/config/hook-gitleaks.toml --gitleaks-ignore-path kit/config/empty.gitleaksignore

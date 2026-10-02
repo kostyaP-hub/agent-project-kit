@@ -1,0 +1,3 @@
+title = "Agent Project Kit strict local gate"
+[extend]
+useDefault = true
