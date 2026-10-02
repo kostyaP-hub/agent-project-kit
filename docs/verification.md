@@ -18,7 +18,10 @@ SessionStart/Stop JSON и защита от stop-loop.
 
 ## Независимая проверка и CI
 
-Перед публикацией обязателен отдельный read-only review. CI после push проверяет
+Независимый read-only review основного kit и узкой CI-коррекции пройден.
+Публичная копия baseline совпала с проверенной Git-историей; anonymous page/README вернули HTTP 200.
+[Подтверждённый CI baseline](https://github.com/kostyaP-hub/agent-project-kit/actions/runs/37035628394)
+для `1bc5d184f8c935f2aa3296268838a38c9ff7fce8`: все четыре matrix jobs успешны. CI после push проверяет
 Python 3.11/3.12 на macOS/Linux и всю Git-историю. Текущий результат CI виден в Actions;
 бейдж не заменяет просмотр результата конкретного commit.
 
