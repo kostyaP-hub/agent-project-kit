@@ -1,13 +1,13 @@
 schema_version: 1
 project: agent-project-kit
-status: building
-stage: Public portable standards and opt-in hooks
+status: live
+stage: "Published portable standards and opt-in hooks; verified public baseline"
 updated: 2026-10-02
-head_sha: "7551e496f445"
+head_sha: "70e92e1d77f9"
 pointers:
   knowledge_entity: docs/project.md
   vault_entity: docs/project.md
   standard: standard/01-PROJECT-STANDARD.md
   verification: docs/verification.md
   traps: docs/hooks.md
-next_action: "Verify the public CI matrix and publish the first release receipt."
+next_action: "Review first-user feedback before extending automatic runtime adapters."
