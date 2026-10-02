@@ -1,5 +1,9 @@
 # Agent Project Kit
 
+![The agent forge: context, rules, hooks and evidence](assets/forge-cover.png)
+
+**Build a workspace your next AI agent can understand.**
+
 A local-first set of project standards, templates, checks and opt-in hooks for humans
 working with AI coding agents. No hosted service, paid APIs or telemetry.
 
@@ -17,3 +21,5 @@ Windows support is not claimed. The architecture extractor is primarily Python A
 The main documentation is in Russian. [Practical lessons](playbook.md),
 [hook install/uninstall](hooks.md), [publishing checklist](publishing.md).
 Code, templates and documentation are MIT-licensed.
+The pixel-art forge illustrates the workflow: context → rules → hooks → evidence.
+[Artwork and generation prompt](art-direction.md).

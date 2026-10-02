@@ -2,6 +2,7 @@
 """Conservative publication checks. Complements Gitleaks and human review."""
 from __future__ import annotations
 import argparse
+import hashlib
 import ipaddress
 import json
 from pathlib import Path
@@ -15,6 +16,12 @@ IP = re.compile(r'(?<![\w.])(?:\d{1,3}\.){3}\d{1,3}(?![\w.])')
 WIKI = re.compile(r'\[\[[A-Za-zА-Яа-я][^\]\n]+\]\]')
 PRIVATE_SUFFIXES = {'.pem', '.key', '.p12', '.pfx', '.db', '.sqlite', '.sqlite3', '.zip', '.jsonl'}
 PUBLIC_DIRS = ('standard', 'kit', 'hooks', 'docs', '.github')
+# Only exact, visually reviewed artwork is exempt from text scanning.
+# Replacing its bytes requires a fresh visual and metadata privacy review.
+REVIEWED_ASSETS = {
+    'docs/assets/forge-cover.png':
+        '0b0058515003116afca0385e1ea3611d783f5e6f1d4c6fb9dfcbf8da7f4ecfe1',
+}
 SKIP = {'.venv', '__pycache__', '.pytest_cache', '.git', 'node_modules'}
 
 def files(root):
@@ -36,6 +43,14 @@ def findings(path, root, denylist):
         return [(str(relative), 'sensitive-file-type')]
     if path.name.startswith('.env.') and path.name != '.env.example':
         return [(str(relative), 'environment-file')]
+    if relative.as_posix() in REVIEWED_ASSETS:
+        try:
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        except OSError:
+            return [(str(relative), 'unreadable-or-binary')]
+        if digest != REVIEWED_ASSETS[relative.as_posix()]:
+            return [(str(relative), 'reviewed-asset-changed')]
+        return []
     try:
         text = path.read_text(encoding='utf-8')
     except (UnicodeError, OSError):

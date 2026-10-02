@@ -26,3 +26,22 @@ def test_binary_and_symlinks_rejected(tmp_path):
     link = tmp_path / 'link.md'
     link.symlink_to(path)
     assert module.findings(link, tmp_path, [])[0][1] == 'symlink'
+
+
+def test_reviewed_asset_requires_exact_bytes(tmp_path, monkeypatch):
+    import hashlib
+    path = tmp_path / 'docs/assets/art.png'
+    path.parent.mkdir(parents=True)
+    original = b'\xffreviewed artwork'
+    path.write_bytes(original)
+    monkeypatch.setattr(module, 'REVIEWED_ASSETS', {
+        'docs/assets/art.png': hashlib.sha256(original).hexdigest(),
+    })
+    assert module.findings(path, tmp_path, []) == []
+    path.write_bytes(original + b'changed')
+    assert module.findings(path, tmp_path, [])[0][1] == 'reviewed-asset-changed'
+    path.unlink()
+    target = tmp_path / 'outside.png'
+    target.write_bytes(original)
+    path.symlink_to(target)
+    assert module.findings(path, tmp_path, [])[0][1] == 'symlink'
