@@ -1,9 +1,9 @@
 schema_version: 1
 project: agent-project-kit
 status: live
-stage: "Public kit with pixel-art forge cover and clear onboarding"
-updated: 2026-10-02
-head_sha: "ba305c323bcd"
+stage: "Public kit with hand-drawn workshop cover and clear onboarding"
+updated: 2026-10-03
+head_sha: "2ad60c72878d"
 pointers:
   knowledge_entity: docs/project.md
   vault_entity: docs/project.md
