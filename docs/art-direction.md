@@ -1,22 +1,20 @@
-# Обложка: мастерская агентов
+# Обложка: кузня агентов
 
-Рисованная иллюстрация показывает четыре части kit: контекст, правила, хуки
-и доказательства. Маленькие механические помощники собирают светящийся проект
-под наблюдением мастера в солнечной деревянной мастерской.
-Акварельный фон, зелёные холмы и мягкие линии передают настроение анимации
-Хаяо Миядзаки. Персонажи вымышлены специально для этой сцены.
+Иллюстрация сочетает тёплую рисованную подачу в духе Хаяо Миядзаки
+с лором Warhammer 40,000: кузня Адептус Механикус, техножрец, сервочерепа,
+красные мантии и готические арки. Помощники собирают программный артефакт.
+Четыре станции показывают контекст, правила, хуки и доказательства.
 
-Изображение создано встроенным imagegen. Исходный prompt приведён ниже.
-Метаданные происхождения сохранены. Личных данных и рабочих материалов
-в сцене нет.
+Создано встроенным imagegen; метаданные происхождения сохранены.
+Личных данных и рабочих материалов в сцене нет.
+Репозиторий не связан с Games Workshop или Studio Ghibli.
 
-`public-check.py` допускает только проверенную версию этой картинки по SHA-256.
-При замене нужен новый визуальный просмотр и проверка метаданных, затем
-обновление хеша. Остальные бинарные файлы по-прежнему отклоняются.
+`public-check.py` допускает только проверенные байты картинки по SHA-256.
+Замена требует визуального просмотра и проверки метаданных перед обновлением хеша.
+Остальные бинарные файлы отклоняются.
 
 ## Prompt
 
 ```text
-Use case: stylized-concept. Wide landscape 2:1 GitHub cover for AGENT PROJECT KIT. In the style of Hayao Miyazaki: warm hand-drawn Japanese animation, delicate ink outlines, watercolor backgrounds, gentle whimsical mechanical invention, lush plants, sunny sky, wonder and caring craftsmanship. Airy wooden workshop overlooking green hills. Friendly small original mechanical assistants assemble a softly glowing software-project cube under guidance of a young artisan with an apron. Four clear workbench stations: organized scrolls for CONTEXT, open instruction book for RULES, little mechanical gates and hooks for HOOKS, green check screen and completed cube for EVIDENCE. Original characters. Scene conveys toolkit for AI agents: understand context, follow rules, run checks, prove completion. Cohesive illustration readable at small size, calm uncluttered shapes, warm cream, leafy green, sky blue, copper and honey palette.
-Large legible title at top exactly "AGENT PROJECT KIT". Four smaller signs exactly "CONTEXT", "RULES", "HOOKS", "EVIDENCE". No other text. No pixel art, no skulls, no official logos, no watermark.
+Wide landscape 2:1 illustrated GitHub repository cover. Exact large title "AGENT PROJECT KIT". Art style of Hayao Miyazaki: delicate hand-drawn animation lines, rich watercolor backgrounds, warm diffuse light, tactile handmade machinery, expressive friendly characters, gentle wonder. Setting and lore explicitly Warhammer 40,000 Adeptus Mechanicus forge workshop: crimson-robed masked tech-priest with glowing green optics and mechadendrites, floating servo-skulls, small squat servitor assistants, brass cog-and-skull emblems, parchment purity seals, incense, gothic arches, huge distant hive-city towers. Faithful recognisable Mechanicus design language rendered with warmth and attentive craftsmanship, no battle or gore. Four connected workbench stations depict repository's purpose: organized data scrolls labeled "CONTEXT"; cog-adorned instruction tome labeled "RULES"; mechanical inspection gates and hook arms labeled "HOOKS"; green verification cogitator with checkmark and completed glowing software-project cube labeled "EVIDENCE". Central tech-priest and helpers carefully assemble the cube. Warm cream parchment, worn brass, crimson cloth, verdigris and jade lights. Beautiful cohesive watercolor scene, readable silhouettes and labels at small README size. The environment must clearly be 40k Mechanicus rather than pastoral generic fantasy. Large exact title at top and four exact labels below, no other text. No pixel art, no official franchise wordmark, no watermark.
 ```
