@@ -1,9 +1,9 @@
 schema_version: 1
 project: agent-project-kit
 status: live
-stage: "Public kit with hand-drawn workshop cover and clear onboarding"
+stage: "Public kit with illustrated Mechanicus forge cover"
 updated: 2026-10-03
-head_sha: "2ad60c72878d"
+head_sha: "2df0cec0b146"
 pointers:
   knowledge_entity: docs/project.md
   vault_entity: docs/project.md
