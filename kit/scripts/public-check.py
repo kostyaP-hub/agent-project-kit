@@ -20,7 +20,7 @@ PUBLIC_DIRS = ('standard', 'kit', 'hooks', 'docs', '.github')
 # Replacing its bytes requires a fresh visual and metadata privacy review.
 REVIEWED_ASSETS = {
     'docs/assets/forge-cover.png':
-        '7152095968990021179ac3e7e8b4a93f5545866967144430222a8e9a41451d12',
+        'f7f7061f289436b9c52a3d7a7a8d83cf318e881720b2c76f606dec6970e5181e',
 }
 SKIP = {'.venv', '__pycache__', '.pytest_cache', '.git', 'node_modules'}
 
