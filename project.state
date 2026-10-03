@@ -3,7 +3,7 @@ project: agent-project-kit
 status: live
 stage: "Public kit with illustrated Mechanicus forge cover"
 updated: 2026-10-03
-head_sha: "2df0cec0b146"
+head_sha: "47eafd903ab0"
 pointers:
   knowledge_entity: docs/project.md
   vault_entity: docs/project.md
