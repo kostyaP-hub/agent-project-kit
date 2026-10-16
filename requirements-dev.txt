@@ -1,5 +1,5 @@
 # Test dependencies; CLI runtime uses stdlib, pathspec is optional for .ctxignore.
-iniconfig==2.3.0
+iniconfig==2.3.1
 packaging==26.3
 pathspec==1.1.1
 pluggy==1.6.0
