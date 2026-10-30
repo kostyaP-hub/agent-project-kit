@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "project-docs": {
+      "command": "./tools/mcp/docs-server",
+      "args": ["--read-only"],
+      "env": {
+        "DOCS_TOKEN": "${DOCS_TOKEN}"
+      }
+    }
+  }
+}

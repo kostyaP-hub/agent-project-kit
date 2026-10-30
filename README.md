@@ -16,7 +16,9 @@ Git-хуки и приёмы из практики. Для личных прое
 CLI работает локально; облачный сервис, платные API и отдельная база знаний не нужны.
 
 [Начать за 5 минут](docs/quickstart.md) · [Стандарт](standard/01-PROJECT-STANDARD.md) ·
-[Хуки](docs/hooks.md) · [Наши лайфхаки](docs/playbook.md) · [English](docs/overview.en.md)
+[Хуки](docs/hooks.md) · [Совместимость агентов](docs/compatibility.md) ·
+[Безопасность конфигов](docs/agent-config-security.md) · [Наши лайфхаки](docs/playbook.md) ·
+[English](docs/overview.en.md)
 
 | Проблема | Что помогает |
 |---|---|
@@ -84,7 +86,7 @@ python3 kit/scripts/install-hooks.py --repo /path/to/your-project
 | `standard/` | Стандарт, внедрение в существующие проекты, создание нового |
 | `kit/rules/` | Общие правила и шаблоны правил конкретного проекта |
 | `kit/scripts/` | Scaffold, lint, карта структуры, state, установка хуков |
-| `kit/templates/` | `AGENTS.md`, `project.state`, решения и security-конфиги |
+| `kit/templates/` | `AGENTS.md`, `project.state`, решения, отчёт о проверке, пример MCP и security-конфиги |
 | `kit/examples/` | Вымышленные примеры, без рабочих данных |
 | `hooks/` | Читаемые Git wrappers и пример Claude Code-конфигурации |
 | `docs/playbook.md` | Приёмы из практики и объяснение, зачем они нужны |
