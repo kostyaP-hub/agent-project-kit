@@ -6,9 +6,12 @@
 | Агент | Читает `AGENTS.md` | Вложенные файлы | Как подключить kit | Источник |
 |---|---|---|---|---|
 | Codex CLI | Да, нативно | Да: от корня до текущей папки, ближний файл идёт позже и перекрывает; `AGENTS.override.md` в той же папке заменяет `AGENTS.md` | Ничего не нужно | [Codex: AGENTS.md](https://developers.openai.com/codex/guides/agents-md) |
-| Claude Code | Да, встроенным плагином. По умолчанию — только если в проекте нет своего `CLAUDE.md`; режим `claude-md-and-agents-md` грузит оба | Да, как `CLAUDE.md` | Обёртка `CLAUDE.md` с одной строкой `@AGENTS.md`. Импортированный файл повторно не грузится | [anthropics/claude-code: agents-md](https://github.com/anthropics/claude-code/blob/main/mods/agents-md/README.md) |
+| Claude Code | Да, встроенным плагином. По умолчанию — только если в проекте нет своего `CLAUDE.md`; режим `claude-md-and-agents-md` грузит оба, кроме файлов, уже импортированных через `@`. Режим задаётся в пользовательских или managed настройках, не в `.claude/settings.json` проекта | Да, как `CLAUDE.md` | Обёртка `CLAUDE.md` с одной строкой `@AGENTS.md`: при ней плагин в режиме по умолчанию не участвует, `AGENTS.md` приходит через импорт | [anthropics/claude-code: agents-md](https://github.com/anthropics/claude-code/blob/main/mods/agents-md/README.md) |
 | GitHub Copilot (CLI, VS Code, GitHub.com) | Да, вместе с `CLAUDE.md` и `GEMINI.md` | Зависит от клиента | Ничего не нужно. Общего порядка приоритета между файлами инструкций в большинстве клиентов нет — не дублируйте правила в `.github/copilot-instructions.md` | [GitHub Docs: custom instructions](https://docs.github.com/en/copilot/concepts/prompting-and-context/custom-instructions) |
 | Gemini CLI | По умолчанию читает `GEMINI.md`; `AGENTS.md` — через `context.fileName` в `settings.json` | Да: предки рабочей папки и папки, к которым обращается инструмент | Обёртка `GEMINI.md` с `@AGENTS.md` или `"context": {"fileName": ["AGENTS.md", "GEMINI.md"]}` | [Gemini CLI: GEMINI.md](https://geminicli.com/docs/cli/gemini-md/) |
+
+Для бесплатного уровня и пользователей Google One Gemini CLI с 18.06.2026 заменён
+Antigravity CLI (по документации Gemini CLI); строка выше относится к остальным.
 
 ## Что из этого следует
 
