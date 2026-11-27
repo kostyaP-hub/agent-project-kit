@@ -5,4 +5,4 @@ pathspec==1.1.1
 pluggy==1.6.0
 Pygments==2.21.0
 pytest==9.1.1
-PyYAML==6.0.3
+PyYAML==6.0.4
